@@ -22,6 +22,8 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(pcl_ros REQUIRED)
+find_package(pcl_conversions REQUIRED)
 
 include_directories(include)
 
@@ -37,6 +39,8 @@ set(dependencies
   tf2
   tf2_ros
   tf2_geometry_msgs
+  pcl_ros
+  pcl_conversions
 )
 
 add_library(${library_name} src/correct_2d_ndt.cpp)
