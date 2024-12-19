@@ -1,30 +1,30 @@
-#include "correct_2d/correct_2d.hpp"
+#include "correct_2d_icp/correct_2d_icp.hpp"
 
-namespace correct_2d
+namespace correct_2d_icp
 {
-Correct2d::Correct2d() : Node("correct_2d")
+Correct2dICP::Correct2dICP() : Node("correct_2d_icp")
 {
     spdlog::info("Correct launch");
 
     // 创建订阅者
     map_subscription_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
-        "map", 10, std::bind(&Correct2d::MapCallback, this, std::placeholders::_1));
+        "map", 10, std::bind(&Correct2dICP::MapCallback, this, std::placeholders::_1));
     scan_subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-        "scan", 10, std::bind(&Correct2d::ScanCallback, this, std::placeholders::_1));
+        "scan", 10, std::bind(&Correct2dICP::ScanCallback, this, std::placeholders::_1));
 
     // 初始化tf2
     tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 
-Correct2d::~Correct2d() {}
+Correct2dICP::~Correct2dICP() {}
 
-void Correct2d::MapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
+void Correct2dICP::MapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
 {
     map_ = *msg;
 }
 
-void Correct2d::ScanCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
+void Correct2dICP::ScanCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
 {
     // 更新扫描数据
     scan_ = *msg;
@@ -52,7 +52,7 @@ void Correct2d::ScanCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
 }
 
 // ICP
-void Correct2d::ComputeICP(const pcl::PointCloud<pcl::PointXYZ>& cloud_map, const pcl::PointCloud<pcl::PointXYZ>& cloud_scan, 
+void Correct2dICP::ComputeICP(const pcl::PointCloud<pcl::PointXYZ>& cloud_map, const pcl::PointCloud<pcl::PointXYZ>& cloud_scan, 
     double& x, double& y, double& yaw_rad, double& yaw_deg)
 {
     // 创建 ICP 对象
@@ -107,7 +107,7 @@ void Correct2d::ComputeICP(const pcl::PointCloud<pcl::PointXYZ>& cloud_map, cons
     spdlog::info("");
 }
 
-void Correct2d::ConvertMapToPointCloud(const nav_msgs::msg::OccupancyGrid& map, pcl::PointCloud<pcl::PointXYZ>& cloud)
+void Correct2dICP::ConvertMapToPointCloud(const nav_msgs::msg::OccupancyGrid& map, pcl::PointCloud<pcl::PointXYZ>& cloud)
 {
     cloud.clear();
     for (size_t i = 0; i < map.data.size(); i++) {
@@ -132,7 +132,7 @@ void Correct2d::ConvertMapToPointCloud(const nav_msgs::msg::OccupancyGrid& map, 
     cloud.is_dense = false;
 }
 
-void Correct2d::ConvertScanToPointCloud(const sensor_msgs::msg::LaserScan& scan, pcl::PointCloud<pcl::PointXYZ>& cloud) 
+void Correct2dICP::ConvertScanToPointCloud(const sensor_msgs::msg::LaserScan& scan, pcl::PointCloud<pcl::PointXYZ>& cloud) 
 {
     // 在查找变换之前，检查 "map" 和 "scan" 坐标系的变换是否可用
     try {

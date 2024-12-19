@@ -1,5 +1,5 @@
-#ifndef CORRECT_2D__CORRECT_2D_HPP_
-#define CORRECT_2D__CORRECT_2D_HPP_
+#ifndef CORRECT_2D_ICP__CORRECT_2D_ICP_HPP_
+#define CORRECT_2D_ICP__CORRECT_2D_ICP_HPP_
 
 #include "rclcpp/rclcpp.hpp"
 #include "spdlog/spdlog.h"
@@ -20,13 +20,13 @@
 #include "pcl/registration/icp.h"
 #include <pcl/filters/voxel_grid.h>  // 添加此行 filter points
 
-namespace correct_2d
+namespace correct_2d_icp
 {
-class Correct2d : public rclcpp::Node
+class Correct2dICP : public rclcpp::Node
 {
 public:
-    Correct2d();
-    ~Correct2d();
+    Correct2dICP();
+    ~Correct2dICP();
 
 private:
     void MapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
@@ -50,10 +50,7 @@ private:
     void ComputeICP(const pcl::PointCloud<pcl::PointXYZ>& cloud_map, const pcl::PointCloud<pcl::PointXYZ>& cloud_scan, 
         double& x, double& y, double& yaw_rad, double& yaw_deg);
 
-
-
-
 };
-}  // namespace correct_2d
+}  // namespace correct_2d_icp
 
-#endif  // CORRECT_2D__CORRECT_2D_HPP_
+#endif  // CORRECT_2D_ICP__CORRECT_2D_ICP_HPP_

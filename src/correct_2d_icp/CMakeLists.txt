@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(correct_2d)
+project(correct_2d_icp)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -27,7 +27,7 @@ find_package(pcl_conversions REQUIRED)
 
 include_directories(include)
 
-set(executable_name correct_2d)
+set(executable_name correct_2d_icp)
 
 set(library_name ${executable_name}_core)
 
@@ -43,7 +43,7 @@ set(dependencies
   pcl_conversions
 )
 
-add_library(${library_name} src/correct_2d.cpp)
+add_library(${library_name} src/correct_2d_icp.cpp)
 target_include_directories(${library_name} PRIVATE include)
 ament_target_dependencies(${library_name} ${dependencies})
 
@@ -52,6 +52,10 @@ target_include_directories(${executable_name} PRIVATE include)
 ament_target_dependencies(${executable_name} ${dependencies})
 
 target_link_libraries(${executable_name} ${library_name} fmt::fmt)
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
